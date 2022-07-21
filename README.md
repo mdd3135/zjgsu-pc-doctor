@@ -1,6 +1,6 @@
 # zjgsu-pc-doctor
 
-这是这工商电脑医院预约程序的后端项目，采用springboot
+这是这工商电脑医院预约程序的后端项目，采用springboot + mysql
 
 文件解释：
 
