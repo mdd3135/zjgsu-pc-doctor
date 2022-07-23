@@ -183,5 +183,72 @@ public class HelloController {
         if(ok == 1) return "OK";
         else return "FAIL";
     }
+    @CrossOrigin(origins = "*")
+    @PostMapping("/add_message")
+    public String add_message(@RequestParam Map<String, String> mp){
+        int first = 0; 
+        int ok = 1;
+        Date date_time = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+        String sql_time = sdf.format(date_time);
+        mp.put("time", sql_time);
+        String sql = "insert into message_table (";
+        for(String key : mp.keySet()){
+            if(first == 0){
+                sql = sql + key;
+                first = 1;
+            }
+            else{
+                sql = sql + "," + key;
+            }
+        }
+        sql = sql + ") values (";
+        first = 0;
+        for(String key : mp.keySet()){
+            if(first == 0){
+                sql = sql + "'" + mp.get(key) + "'";
+                first = 1;
+            }
+            else{
+                sql = sql + "," + "'" + mp.get(key) + "'";
+            }
+        }
+        sql = sql + ")";
+        try{
+            jdbcTemplate.update(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            ok = 0;
+        }
+        if(ok == 0) return "FAIL";
+        else return "OK";
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/query_message")
+    public List<Map<String, Object>> query_message(@RequestParam Map<String, String> mp){
+        int first = 0;
+        int page = -1;
+        String sql = "SELECT * FROM message_table ";
+        for(String key : mp.keySet()){
+            if(key.equals("page")){
+                page = Integer.parseInt(mp.get(key));
+            }
+            else if(first == 0){
+                sql = sql + "where " + key + " = " + "\"" + mp.get(key) + "\"";
+                first = 1;
+            }
+            else{
+                sql = sql + " and " + key + " = " + "\"" + mp.get(key) + "\"";
+            }
+        }
+        // sql = sql + "order by id desc";
+        if(page != -1){
+            int lmt = page * 10 - 10;
+            sql = sql +  " limit " + lmt + ",10";
+        }
+        List<Map<String, Object>> list =  jdbcTemplate.queryForList(sql);
+        return list;
+    }
 
 }
