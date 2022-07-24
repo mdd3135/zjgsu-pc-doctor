@@ -94,7 +94,7 @@ public class HelloController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("/submit")
-    public String submit(@RequestParam Map<String, String> mp){
+    public List submit(@RequestParam Map<String, String> mp){
         int first = 0; 
         int ok = 1;
         Date date_time = new Date();
@@ -129,13 +129,10 @@ public class HelloController {
             e.printStackTrace();
             ok = 0;
         }
-        if(ok == 0) return "FAIL";
-        else {
-            sql = "SELECT LAST_INSERT_ID()";
-            Map<String, Object> map = jdbcTemplate.queryForMap(sql);
-            Map<String, String> map2 = Map.of("id", map.get("LAST_INSERT_ID()").toString());
-            return query(map2).toString();
-        }
+        sql = "SELECT LAST_INSERT_ID()";
+        Map<String, Object> map = jdbcTemplate.queryForMap(sql);
+        Map<String, String> map2 = Map.of("id", map.get("LAST_INSERT_ID()").toString());
+        return query(map2);
     }
 
     @CrossOrigin(origins = "*")
