@@ -130,7 +130,12 @@ public class HelloController {
             ok = 0;
         }
         if(ok == 0) return "FAIL";
-        else return "OK";
+        else {
+            sql = "SELECT LAST_INSERT_ID()";
+            Map<String, Object> map = jdbcTemplate.queryForMap(sql);
+            System.out.println(map);
+            return map.get("LAST_INSERT_ID()").toString();
+        }
     }
 
     @CrossOrigin(origins = "*")
@@ -221,7 +226,12 @@ public class HelloController {
             ok = 0;
         }
         if(ok == 0) return "FAIL";
-        else return "OK";
+        else {
+            sql = "SELECT LAST_INSERT_ID()";
+            Map<String, Object> map = jdbcTemplate.queryForMap(sql);
+            System.out.println(map);
+            return map.get("LAST_INSERT_ID()").toString();
+        }
     }
 
     @CrossOrigin(origins = "*")
@@ -247,7 +257,7 @@ public class HelloController {
             int lmt = page * 10 - 10;
             sql = sql +  " limit " + lmt + ",10";
         }
-        List<Map<String, Object>> list =  jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> list =jdbcTemplate.queryForList(sql);
         return list;
     }
 
