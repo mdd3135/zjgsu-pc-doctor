@@ -133,8 +133,8 @@ public class HelloController {
         else {
             sql = "SELECT LAST_INSERT_ID()";
             Map<String, Object> map = jdbcTemplate.queryForMap(sql);
-            System.out.println(map);
-            return map.get("LAST_INSERT_ID()").toString();
+            Map<String, String> map2 = Map.of("id", map.get("LAST_INSERT_ID()").toString());
+            return query(map2).toString();
         }
     }
 
