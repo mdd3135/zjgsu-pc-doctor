@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.apache.commons.beanutils.BeanMap;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -96,7 +97,6 @@ public class HelloController {
     @PostMapping("/submit")
     public List submit(@RequestParam Map<String, String> mp){
         int first = 0; 
-        int ok = 1;
         Date date_time = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
         String sql_time = sdf.format(date_time);
@@ -127,12 +127,13 @@ public class HelloController {
             jdbcTemplate.update(sql);
         }catch(Exception e){
             e.printStackTrace();
-            ok = 0;
         }
         sql = "SELECT LAST_INSERT_ID()";
         Map<String, Object> map = jdbcTemplate.queryForMap(sql);
         Map<String, String> map2 = Map.of("id", map.get("LAST_INSERT_ID()").toString());
-        return query(map2);
+        List<Map<String, Object>> ls = query(map2);
+        Roboot.send((Map<String, String>)ls.toArray()[0]);
+        return ls;
     }
 
     @CrossOrigin(origins = "*")
