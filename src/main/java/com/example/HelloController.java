@@ -47,14 +47,14 @@ public class HelloController {
 	}
 
     // 跨域，确保前端能够正常访问
-    // get接口为地址"/query"，该接口的具体用法看apifox，这里不再细说
+    // get接口为地址"/query"，该接口的具体用法看apifox，这里不再细说，下面几个方法也一样，不再注释了。
     // mp是接收的参数map
     @CrossOrigin(origins = "*")
     @GetMapping("/query")
     public List<Map<String, Object>> query(@RequestParam Map<String, String> mp){
         int first = 0;
         int page = -1;
-        //开始拼接mysql语句，最后的sql语句为 SELECT * FROM appointment_table where xxx="xx" and xxx="xx" and xxx="xx" order by id desc limit i, 10
+        //拼接mysql语句，最后的sql语句类似于 SELECT * FROM appointment_table where xxx="xx" and xxx="xx" and xxx="xx" order by id desc limit i, 10
         //接上句注释 order by id desc表示按id降序排序，新添加的记录再最前面。limit i,10 表示从第i条记录开始选10条记录
         String sql = "SELECT * FROM appointment_table ";
         //遍历整个接收到的参数map
@@ -75,7 +75,7 @@ public class HelloController {
             int lmt = page * 10 - 10;
             sql = sql +  " limit " + lmt + ",10";
         }
-        // 执行sql语句，并把结果保存在list中，返回给前端。
+        // 执行sql语句，并把查询结果保存在list中，返回给前端。
         List<Map<String, Object>> list =  jdbcTemplate.queryForList(sql);
         return list;
     }
@@ -84,10 +84,12 @@ public class HelloController {
     @PostMapping("/submit")
     public List submit(@RequestParam Map<String, String> mp){
         int first = 0; 
+        // 这部分是用来生成创建时间，再把它变成指定的格式，便于放入数据库中
         Date date_time = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
         String sql_time = sdf.format(date_time);
         mp.put("create_time", sql_time);
+        // 拼装sql语句，最后结果类似于 insert into appointment_table (xxx1,xxx2,xxx3) values ('xx1','xx2','xx3')
         String sql = "insert into appointment_table (";
         for(String key : mp.keySet()){
             if(first == 0){
@@ -110,32 +112,32 @@ public class HelloController {
             }
         }
         sql = sql + ")";
-        try{
-            jdbcTemplate.update(sql);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        // 执行sql语句，插入记录成功
+        jdbcTemplate.update(sql);
+        // 这个sql语句用来查询最新插入的记录
         sql = "SELECT LAST_INSERT_ID()";
         Map<String, Object> map = jdbcTemplate.queryForMap(sql);
+        // 构造map，便于调用之前写好的query方法查询最新插入的记录，并把结果保存在ls中，交给Roboot类处理机器人发送消息，并返回ls给前端
         Map<String, String> map2 = Map.of("id", map.get("LAST_INSERT_ID()").toString());
         List<Map<String, Object>> ls = query(map2);
         Roboot.send((Map<String, String>)ls.toArray()[0]);
         return ls;
     }
 
-    //跨域，确保前端能够正常访问
-    //接口为"/delete"
     @CrossOrigin(origins = "*")
     @PostMapping("/delete")
     public String delete(@RequestParam Map<String, String> mp){
         int ok = 1;
+        // 拼装sql语句，结果类似于 delete from appointment_table where id = 'x'
         String sql = "delete from appointment_table where id = ";
+        // 遍历mp，找到id值
         for(String key : mp.keySet()){
             if(key.equals("id")) {
                 sql = sql + mp.get(key);
                 break;
             }
         }
+        // 执行sql语句，这里加入异常处理，防止删除了一个不存在的id记录报错
         try{
             jdbcTemplate.update(sql);
         }catch(Exception e){
@@ -152,6 +154,7 @@ public class HelloController {
         int ok = 1;
         int id = 0;
         int first = 0;
+        // sql语句类似于update appointment_table set xxx='xx',xxx='xx',xxx='xx' where id = x
         String sql = "update appointment_table set ";
         for(String key : mp.keySet()){
             if(key.equals("id")){
@@ -166,6 +169,7 @@ public class HelloController {
             }
         }
         sql = sql + " where id=" + id;
+        // 异常处理，防止更改了一条id不存在的记录
         try{
             jdbcTemplate.update(sql);
         }catch(Exception e){
@@ -175,6 +179,8 @@ public class HelloController {
         if(ok == 1) return "OK";
         else return "FAIL";
     }
+
+    // 添加消息的方法如submit
     @CrossOrigin(origins = "*")
     @PostMapping("/add_message")
     public String add_message(@RequestParam Map<String, String> mp){
@@ -221,6 +227,7 @@ public class HelloController {
         }
     }
 
+    // 查询消息的方法如 query
     @CrossOrigin(origins = "*")
     @GetMapping("/query_message")
     public List<Map<String, Object>> query_message(@RequestParam Map<String, String> mp){
