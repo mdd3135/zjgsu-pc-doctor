@@ -18,7 +18,6 @@ import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.apache.commons.beanutils.BeanMap;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,6 +25,7 @@ public class HelloController {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
+    //这部分可以忽略，当时用来测试的，现在几乎不用了。
     @CrossOrigin(origins = "*")
 	@RequestMapping("/getTable")
     public List<Map<String, Object>> getTable(){
@@ -46,32 +46,18 @@ public class HelloController {
         return list;
 	}
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping("/{demo}")
-    public List<Map<String, Object>> demo(@PathVariable(name = "demo") String demo, @RequestParam(name = "name") String name){
-        String sql = "SELECT * FROM appointment_table WHERE name = \"" + name + "\"";
-        List<Map<String, Object>> list =  jdbcTemplate.queryForList(sql);
-        for (Map<String, Object> map : list) {
-            Set<Entry<String, Object>> entries = map.entrySet( );
-            if(entries != null) {
-                Iterator<Entry<String, Object>> iterator = entries.iterator( );
-                while(iterator.hasNext( )) {
-                    Entry<String, Object> entry =(Entry<String, Object>) iterator.next( );
-                    Object key = entry.getKey( );
-                    Object value = entry.getValue();
-                    System.out.println(key+":"+value);
-                }
-            }
-        }
-        return list;
-    }
-
+    // 跨域，确保前端能够正常访问
+    // get接口为地址"/query"，该接口的具体用法看apifox，这里不再细说
+    // mp是接收的参数map
     @CrossOrigin(origins = "*")
     @GetMapping("/query")
     public List<Map<String, Object>> query(@RequestParam Map<String, String> mp){
         int first = 0;
         int page = -1;
+        //开始拼接mysql语句，最后的sql语句为 SELECT * FROM appointment_table where xxx="xx" and xxx="xx" and xxx="xx" order by id desc limit i, 10
+        //接上句注释 order by id desc表示按id降序排序，新添加的记录再最前面。limit i,10 表示从第i条记录开始选10条记录
         String sql = "SELECT * FROM appointment_table ";
+        //遍历整个接收到的参数map
         for(String key : mp.keySet()){
             if(key.equals("page")){
                 page = Integer.parseInt(mp.get(key));
@@ -89,6 +75,7 @@ public class HelloController {
             int lmt = page * 10 - 10;
             sql = sql +  " limit " + lmt + ",10";
         }
+        // 执行sql语句，并把结果保存在list中，返回给前端。
         List<Map<String, Object>> list =  jdbcTemplate.queryForList(sql);
         return list;
     }
@@ -136,6 +123,8 @@ public class HelloController {
         return ls;
     }
 
+    //跨域，确保前端能够正常访问
+    //接口为"/delete"
     @CrossOrigin(origins = "*")
     @PostMapping("/delete")
     public String delete(@RequestParam Map<String, String> mp){
