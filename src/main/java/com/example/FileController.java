@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@CrossOrigin(origins = "*")
 public class FileController {
     @Value("${file.upload.path}")
     private String path;
@@ -25,7 +24,7 @@ public class FileController {
 
     @PostMapping("/upload")
     @ResponseBody
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://1.117.89.152:8080")
     public String upload(@RequestParam("file") MultipartFile file){
         int ok = 1;
         String oldName = file.getOriginalFilename();
@@ -50,7 +49,6 @@ public class FileController {
     }
 
     @GetMapping("/download")
-    @CrossOrigin(origins = "*")
     public String download(HttpServletResponse response, @RequestParam("file") String file){
         int ok = 1;
         File dest = new File(path + file);
