@@ -129,4 +129,19 @@ public class UserController {
         jdbcTemplate.update(sql);
         return "OK";
     }
+
+    @PostMapping("/delete_user")
+    public String delete_user(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
+        String sql = "select * from user_table where session_id='" + session_id + "'";
+        List<Map<String, Object>> ls = jdbcTemplate.queryForList(sql);
+        String user_id = ls.get(0).get("user_id").toString();
+        String level = ls.get(0).get("level").toString();
+        String dest_user_id = mp.get("user_id");
+        if(user_id.compareTo(dest_user_id) != 0 && level.compareTo("2") < 0){
+            return "FAIL";
+        }
+        sql = "delete from user_table where user_id='" + dest_user_id + "'";
+        jdbcTemplate.update(sql);
+        return "OK";
+    }
 }
