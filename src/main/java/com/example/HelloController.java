@@ -1,6 +1,5 @@
 package com.example;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -48,11 +47,10 @@ public class HelloController {
     // get接口为地址"/query"，该接口的具体用法看apifox，这里不再细说，下面几个方法也一样，不再注释了。
     // mp是接收的参数map
     @GetMapping("/query")
-    public List<Map<String, Object>> query(@RequestParam Map<String, String> mp){
-        int first = 0;
+    public Map<String, Object> query(@RequestParam Map<String, String> mp){
         int page = -1;
-        //拼接mysql语句，最后的sql语句类似于 SELECT * FROM appointment_table where xxx="xx" and xxx="xx" and xxx="xx" order by id desc limit i, 10
-        //接上句注释 order by id desc表示按id降序排序，新添加的记录再最前面。limit i,10 表示从第i条记录开始选10条记录
+        //拼接mysql语句，最后的sql语句类似于 SELECT * FROM appointment_table where xxx="xx" and xxx="xx" and xxx="xx" order by id desc 
+        //接上句注释 order by id desc表示按id降序排序，新添加的记录再最前面。
         String sql = "SELECT * FROM appointment_table a, user_table b where a.user_id = b.user_id ";
         //遍历整个接收到的参数map
         for(String key : mp.keySet()){
@@ -63,14 +61,26 @@ public class HelloController {
                 sql = sql + " and " + key + " = " + "\"" + mp.get(key) + "\"";
             }
         }
-        sql = sql + "order by a.id desc";
-        if(page != -1){
-            int lmt = page * 10 - 10;
-            sql = sql +  " limit " + lmt + ",10";
-        }
+        sql = sql + " order by a.id desc";
         // 执行sql语句，并把查询结果保存在list中，返回给前端。
         List<Map<String, Object>> list =  jdbcTemplate.queryForList(sql);
-        return list;
+        int size = list.size();
+        if(page != -1){
+            list = list.subList(page * 10 - 10, min(page * 10, size));
+        }
+        for(int i = 0; i < list.size(); i++){
+            Map<String, Object> tmp = list.get(i);
+            tmp.remove("pwd_md5");
+            tmp.remove("session_id");
+            tmp.remove("expiration_time");
+        }
+        Map<String, Object> res = Map.of("list", list, "size", size);
+        return res;
+    }
+
+    private int min(int a, int b) {
+        if(a > b) return b;
+        else return a;
     }
 
     @PostMapping("/submit")
@@ -83,8 +93,8 @@ public class HelloController {
         // 验证session_id 
         String sql = "select * from user_table where session_id = '" + session_id + "'";
         List<Map<String, Object>> ls = jdbcTemplate.queryForList(sql);
-        if(ls.size() == 0 || String.valueOf(System.currentTimeMillis()).compareTo(ls.get(0).get("expiration_time").toString()) > 0){
-            // 无session或session_id过期
+        if(String.valueOf(System.currentTimeMillis()).compareTo(ls.get(0).get("expiration_time").toString()) > 0){
+            // session_id过期
             return List.of("");
         }
         // 通过上一个if语句表示已经通过验证了
@@ -120,7 +130,7 @@ public class HelloController {
         Map<String, Object> map = jdbcTemplate.queryForMap(sql);
         // 构造map，便于调用之前写好的query方法查询最新插入的记录，并把结果保存在ls中，交给Roboot类处理机器人发送消息，并返回ls给前端
         Map<String, String> map2 = Map.of("id", map.get("LAST_INSERT_ID()").toString());
-        ls = query(map2);
+        ls = (List<Map<String, Object>>) query(map2).get("list");
         Roboot.send((Map<String, String>)ls.toArray()[0]);
         return ls;
     }
@@ -132,9 +142,13 @@ public class HelloController {
         List<Map<String, Object>> ls = jdbcTemplate.queryForList(sql);
         String user_id = ls.get(0).get("user_id").toString();
         String level = ls.get(0).get("level").toString();
+        String expiration_time = ls.get(0).get("expiration_time").toString();
         sql = "select * from appointment_table where id =" + mp.get("id");
         ls = jdbcTemplate.queryForList(sql);
         String request_user_id = ls.get(0).get("user_id").toString();
+        if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
+            return "FAIL";
+        }
         if(user_id.compareTo(request_user_id) != 0 && level.compareTo("2") < 0 ){
             return "FAIL";
         }
@@ -167,9 +181,13 @@ public class HelloController {
         List<Map<String, Object>> ls = jdbcTemplate.queryForList(sql);
         String user_id = ls.get(0).get("user_id").toString();
         String level = ls.get(0).get("level").toString();
+        String expiration_time = ls.get(0).get("level").toString();
         sql = "select * from appointment_table where id =" + mp.get("id");
         ls = jdbcTemplate.queryForList(sql);
         String request_user_id = ls.get(0).get("user_id").toString();
+        if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
+            return "FAIL";
+        }
         if(user_id.compareTo(request_user_id) != 0 && level.compareTo("2") < 0 ){
             return "FAIL";
         }

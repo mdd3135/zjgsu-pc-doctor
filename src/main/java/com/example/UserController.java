@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,25 +23,37 @@ public class UserController {
         String pwd_md5 = mp.get("pwd_md5");
         String now_stamp = String.valueOf(System.currentTimeMillis());
         String sql = "select * from user_table where user_id = '" + user_id + "'";
-        // 查询用户id，若存在则验证pwd_md5是否一致，若不存在则返回FAIL
+        // 查询用户id，若存在则验证pwd_md5是否一致
         List<Map<String, Object>> ls =  jdbcTemplate.queryForList(sql);
-        if(ls.size() > 0 && ls.get(0).get("pwd_md5").equals(pwd_md5)){
+        if(ls.size() == 0){
+            return "NO SUCH ACCOUNT";
+        }
+        else if(ls.get(0).get("pwd_md").equals(pwd_md5) == false){
+            return "PWD ERROR";
+        }
+        else {
             // 验证通过，更新数据表中的session_id和expiration_time
             String expiration_time = String.valueOf(Long.parseLong(now_stamp) + 7 * 24 * 3600 * 1000);
             sql = "update user_table set session_id = '" + now_stamp + "', expiration_time ='" + expiration_time + "' where user_id = '" + user_id + "'";
             jdbcTemplate.update(sql);
             return now_stamp;
         }
-        else{
-            return "FAIL";
-        }
     }
 
     @GetMapping("/query_user")
-    public List<Map<String, Object>> query_user(@RequestParam Map<String, String> mp){
+    public Map<String, Object> query_user(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
         int first = 0;
         int page = -1;
-        String sql = "select * from user_table ";
+        String sql = "select * from user_table where session_id='" + session_id + "'";
+        List<Map<String, Object>> ls = jdbcTemplate.queryForList(sql);
+        String level = ls.get(0).get("level").toString();
+        if(String.valueOf(System.currentTimeMillis()).compareTo(ls.get(0).get("expiration_time").toString()) > 0){
+            return Map.of("", "");
+        }
+        if(level.compareTo("2") < 0){
+            return Map.of("", "");
+        }
+        sql = "select * from user_table ";
         for(String key : mp.keySet()){
             if(key.equals("page")){
                 page = Integer.parseInt(mp.get("page"));
@@ -55,12 +66,42 @@ public class UserController {
                 sql += "and " + key + "= " + mp.get(key) + "' ";
             }
         }
+        ls = jdbcTemplate.queryForList(sql);
+        int size = ls.size();
         if(page != -1){
-            int lmt = page * 10 - 10;
-            sql = sql +  " limit " + lmt + ",10";
+            ls = ls.subList(page*10 - 10, min(page*10, size));
         }
+        // 除去不必要的返回内容
+        for(int i = 0; i < ls.size(); i++){
+            Map<String, Object> tmp = ls.get(i);
+            tmp.remove("pwd_md5");
+            tmp.remove("session_id");
+            tmp.remove("expiration_time");
+        }
+        Map<String, Object> res = Map.of("list", ls, "size", size);
+        return res;
+    }
+
+    @GetMapping("/query_self")
+    public Map<String, Object> query_self(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
+        String sql = "select * from user_table where session_id='" + session_id + "'";
         List<Map<String, Object>> ls = jdbcTemplate.queryForList(sql);
-        return ls;
+        String expiration_time = ls.get(0).get("expiration_time").toString();
+        if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
+            return Map.of("", "");
+        }
+        else {
+            Map<String, Object> tmp = ls.get(0);
+            tmp.remove("pwd_md5");
+            tmp.remove("session_id");
+            tmp.remove("expiration_time");
+            return tmp;
+        }
+    }
+
+    private int min(int a, int b) {
+        if(a < b) return a;
+        else return b;
     }
 
     @PostMapping("/register")
@@ -92,6 +133,8 @@ public class UserController {
         try {
             jdbcTemplate.update(sql);
         }catch (Exception e){
+            System.out.println(sql);
+            e.printStackTrace();
             return "FAIL";
         }
         return "OK";
@@ -105,6 +148,9 @@ public class UserController {
         String user_id = ls.get(0).get("user_id").toString();
         String level = ls.get(0).get("level").toString();
         String dest_user_id = mp.get("user_id");
+        if(String.valueOf(System.currentTimeMillis()).compareTo(ls.get(0).get("expiration_time").toString()) > 0){
+            return "FAIL";
+        }
         if(user_id.compareTo(dest_user_id) != 0 && level.compareTo("2") < 0){
             return "FAIL";
         }
@@ -137,6 +183,9 @@ public class UserController {
         String user_id = ls.get(0).get("user_id").toString();
         String level = ls.get(0).get("level").toString();
         String dest_user_id = mp.get("user_id");
+        if(String.valueOf(System.currentTimeMillis()).compareTo(ls.get(0).get("expiration_time").toString()) > 0){
+            return "FAIL";
+        }
         if(user_id.compareTo(dest_user_id) != 0 && level.compareTo("2") < 0){
             return "FAIL";
         }
