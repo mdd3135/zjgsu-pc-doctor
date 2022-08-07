@@ -12,4 +12,4 @@ CREATE TABLE
     `doctor_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`)
-  ) ENGINE = InnoDB AUTO_INCREMENT = 9 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
+  ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci

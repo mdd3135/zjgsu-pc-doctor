@@ -28,11 +28,16 @@ public class UserController {
         if(ls.size() == 0){
             return "NO SUCH ACCOUNT";
         }
-        else if(ls.get(0).get("pwd_md").equals(pwd_md5) == false){
+        else if(ls.get(0).get("pwd_md5").equals(pwd_md5) == false){
             return "PWD ERROR";
         }
         else {
-            // 验证通过，更新数据表中的session_id和expiration_time
+            String old_expiration_time = ls.get(0).get("expiration_time").toString();
+            if(now_stamp.compareTo(old_expiration_time) < 0){
+                // 没过期，返回之前的session_id
+                return ls.get(0).get("session_id").toString();
+            }
+            // 更新数据表中的session_id和expiration_time
             String expiration_time = String.valueOf(Long.parseLong(now_stamp) + 7 * 24 * 3600 * 1000);
             sql = "update user_table set session_id = '" + now_stamp + "', expiration_time ='" + expiration_time + "' where user_id = '" + user_id + "'";
             jdbcTemplate.update(sql);
@@ -107,6 +112,9 @@ public class UserController {
     @PostMapping("/register")
     public String register(@RequestParam Map<String, String> mp){
         int first = 0;
+        String now_stamp = String.valueOf(System.currentTimeMillis());
+        mp.put("session_id", now_stamp);
+        mp.put("expiration_time", now_stamp);
         String sql = "insert into user_table (";
         for(String key : mp.keySet()){
             if(first == 0){

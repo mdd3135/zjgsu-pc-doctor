@@ -289,5 +289,4 @@ public class HelloController {
         List<Map<String, Object>> list =jdbcTemplate.queryForList(sql);
         return list;
     }
-
 }
