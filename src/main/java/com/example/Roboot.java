@@ -3,7 +3,7 @@ package com.example;
 import java.util.Map;
 
 public class Roboot {
-    public static void send(Map<String, String> mesg){
+    public static void send(Map<String, Object> mesg){
         String content = "";
         for(String key : mesg.keySet()){
             if(key.equals("name")){

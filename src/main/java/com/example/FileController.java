@@ -4,11 +4,11 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,9 +24,7 @@ public class FileController {
 
     @PostMapping("/upload")
     @ResponseBody
-    @CrossOrigin(origins = "http://1.117.89.152:8080")
-    public String upload(@RequestParam("file") MultipartFile file){
-        int ok = 1;
+    public Map<String, Object> upload(@RequestParam("file") MultipartFile file){
         String oldName = file.getOriginalFilename();
         String fileName = String.valueOf(System.currentTimeMillis()) + oldName.substring(oldName.lastIndexOf("."));
         String filePath = path + fileName;
@@ -38,14 +36,9 @@ public class FileController {
             file.transferTo(dest);
         } catch (Exception e) {
             e.printStackTrace();
-            ok = 0;
+            return Map.of("code", 3);
         }
-        if(ok == 1){
-            return fileName;
-        }
-        else {
-            return "FAIL";
-        }
+        return Map.of("code", 0, "file_name", fileName);
     }
 
     @GetMapping("/download")
