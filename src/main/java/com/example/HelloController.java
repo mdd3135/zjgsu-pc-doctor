@@ -315,12 +315,16 @@ public class HelloController {
         if(level.compareTo("2") < 0){
             return Map.of("code", 5);
         }
+        sql = "select * from category_table where category='" + mp.get("category") + "'";
+        if(jdbcTemplate.queryForList(sql).size() != 0){
+            return Map.of("code", 10);
+        }
         sql = "insert into category_table (category) values('" + mp.get("category") + "')";
         try{
             jdbcTemplate.update(sql);
         }catch(Exception e){
             e.printStackTrace();
-            return Map.of("code", 10);
+            return Map.of("code", 3);
         }
         return Map.of("code", 0);
     }
