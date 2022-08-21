@@ -7,5 +7,7 @@ CREATE TABLE
     `session_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `expiration_time` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'NULL',
     `contact_details` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `user_description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `user_picture` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     PRIMARY KEY (`user_id`)
   ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
