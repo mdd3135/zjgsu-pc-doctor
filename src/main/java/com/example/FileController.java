@@ -24,10 +24,10 @@ public class FileController {
 
     @PostMapping("/upload")
     @ResponseBody
-    public Map<String, Object> upload(@RequestParam("file") MultipartFile file){
+    public Map<String, Object> upload(@RequestParam("file") MultipartFile file, @RequestParam("type") String type){
         String oldName = file.getOriginalFilename();
         String fileName = String.valueOf(System.currentTimeMillis()) + oldName.substring(oldName.lastIndexOf("."));
-        String filePath = path + fileName;
+        String filePath = path + type + "/" + fileName;
         File dest = new File(filePath);
         if(dest.getParentFile().exists() == false){
             dest.getParentFile().mkdirs();

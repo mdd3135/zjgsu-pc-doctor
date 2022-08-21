@@ -60,29 +60,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("/query_user")
-    public Map<String, Object> query_user(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
-        int first = 0;
+    //这个方法用来为其他查询接口服务，便于代码复用
+    private Map<String, Object> query_user_without_session_id(Map<String, String>mp){
         int page = -1;
-        String sql = "select * from user_table where session_id='" + session_id + "'";
-        List<Map<String, Object>> ls;
-        try{ 
-            ls =jdbcTemplate.queryForList(sql);
-        }catch(Exception e){
-            e.printStackTrace();
-            return Map.of("code", 003);
-        }
-        if(ls.size() == 0){
-            return Map.of("code", 8);
-        }
-        String level = ls.get(0).get("level").toString();
-        if(String.valueOf(System.currentTimeMillis()).compareTo(ls.get(0).get("expiration_time").toString()) > 0){
-            return Map.of("code", 004);
-        }
-        if(level.compareTo("2") < 0){
-            return Map.of("code", 005);
-        }
-        sql = "select * from user_table ";
+        int first = 0;
+        String sql = "select * from user_table ";
         for(String key : mp.keySet()){
             if(key.equals("page")){
                 page = Integer.parseInt(mp.get("page"));
@@ -92,10 +74,10 @@ public class UserController {
                 sql += "where " + key + "= '" + mp.get(key) + "' ";
             }
             else{
-                sql += "and " + key + "= " + mp.get(key) + "' ";
+                sql += "and " + key + "= '" + mp.get(key) + "' ";
             }
         }
-        ls = jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> ls = jdbcTemplate.queryForList(sql);
         int size = ls.size();
         if(page != -1){
             try{
@@ -114,6 +96,35 @@ public class UserController {
         }
         Map<String, Object> res = Map.of("code", 000, "user_list", ls, "size", size);
         return res;
+    }
+
+    @GetMapping("/query_user")
+    public Map<String, Object> query_user(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
+        String sql = "select * from user_table where session_id='" + session_id + "'";
+        List<Map<String, Object>> ls;
+        try{ 
+            ls =jdbcTemplate.queryForList(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 003);
+        }
+        if(ls.size() == 0){
+            return Map.of("code", 8);
+        }
+        String level = ls.get(0).get("level").toString();
+        if(String.valueOf(System.currentTimeMillis()).compareTo(ls.get(0).get("expiration_time").toString()) > 0){
+            return Map.of("code", 004);
+        }
+        if(level.compareTo("2") < 0){
+            return Map.of("code", 005);
+        }
+        return query_user_without_session_id(mp);
+    }
+
+    @GetMapping("/query_doctor")
+    public Map<String, Object> query_doctor(@RequestParam Map<String, String>mp){
+        mp.put("level", "1");
+        return query_user_without_session_id(mp);
     }
 
     @GetMapping("/query_self")

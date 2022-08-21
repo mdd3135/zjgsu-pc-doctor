@@ -1,0 +1,13 @@
+"filename", "language", "Java", "HTML", "Properties", "comment", "blank", "total"
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/FileController.java", "Java", 61, 0, 0, 0, 8, 69
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/HelloApplication.java", "Java", 9, 0, 0, 0, 2, 11
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/HelloController.java", "Java", 288, 0, 0, 23, 13, 324
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/Roboot.java", "Java", 28, 0, 0, 0, 4, 32
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/UserController.java", "Java", 267, 0, 0, 6, 12, 285
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/WebMvcConfig.java", "Java", 11, 0, 0, 23, 2, 36
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/htmlController.java", "Java", 17, 0, 0, 0, 4, 21
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/resources/application.properties", "Properties", 0, 0, 15, 0, 1, 16
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/resources/templates/home.html", "HTML", 0, 24, 0, 0, 5, 29
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/resources/templates/upload.html", "HTML", 0, 15, 0, 0, 3, 18
+"/home/mdd/文档/电医预约程序/zjgsu pc doctor/src/test/java/com/example/demo/DemoApplicationTests.java", "Java", 9, 0, 0, 0, 5, 14
+"Total", "-", 690, 39, 15, 52, 59, 855

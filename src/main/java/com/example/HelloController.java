@@ -3,10 +3,10 @@ package com.example;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.spec.EdECPoint;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -139,7 +139,6 @@ public class HelloController {
 
     @PostMapping("/delete")
     public Map<String, Object> delete(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
-        int ok = 1;
         String sql = "select * from user_table where session_id='" + session_id + "'";
         List<Map<String, Object>> ls;
         try{
@@ -187,7 +186,6 @@ public class HelloController {
 
     @PostMapping("/update")
     public Map<String, Object> update(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
-        int ok = 1;
         int id = 0;
         int first = 0;
         String sql = "select * from user_table where session_id='" + session_id + "'";
@@ -203,15 +201,27 @@ public class HelloController {
         }
         String user_id = ls.get(0).get("user_id").toString();
         String level = ls.get(0).get("level").toString();
-        String expiration_time = ls.get(0).get("level").toString();
+        String expiration_time = ls.get(0).get("expiration_time").toString();
         sql = "select * from appointment_table where id =" + mp.get("id");
         ls = jdbcTemplate.queryForList(sql);
         String request_user_id = ls.get(0).get("user_id").toString();
         if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
             return Map.of("code", 4);
         }
-        if(user_id.compareTo(request_user_id) != 0 && level.compareTo("2") < 0 ){
+        if(user_id.compareTo(request_user_id) != 0 && level.compareTo("1") < 0 ){
             return Map.of("code", 5);
+        }
+        //若改变status则自动生成相应的时间
+        if(mp.containsKey("status")){
+            Date date_time = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+            String sql_time = sdf.format(date_time);
+            if(mp.get("status").equals("1")){
+                mp.put("appointment_time", sql_time);
+            }
+            else if(mp.get("status").equals("2")){
+                mp.put("done_time", sql_time);
+            }
         }
         // sql语句类似于update appointment_table set xxx='xx',xxx='xx',xxx='xx' where id = x
         sql = "update appointment_table set ";
@@ -282,6 +292,85 @@ public class HelloController {
             System.out.println(map);
             return map.get("LAST_INSERT_ID()").toString();
         }
+    }
+
+    @PostMapping("/add_category")
+    public Map<String, Object> add_category(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
+        String sql = "select * from user_table where session_id='" + session_id + "'";
+        List<Map<String, Object>> ls;
+        try{
+            ls = jdbcTemplate.queryForList(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
+        if(ls.size() == 0){
+            return Map.of("code", 8);
+        }
+        String level = ls.get(0).get("level").toString();
+        String expiration_time = ls.get(0).get("expiration_time").toString();
+        if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
+            return Map.of("code", 4);
+        }
+        if(level.compareTo("2") < 0){
+            return Map.of("code", 5);
+        }
+        sql = "insert into category_table (category) values('" + mp.get("category") + "')";
+        try{
+            jdbcTemplate.update(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 10);
+        }
+        return Map.of("code", 0);
+    }
+
+    @GetMapping("/query_category")
+    public Map<String, Object> query_category(@RequestParam Map<String, String> mp){
+        String sql = "select * from category_table";
+        List<Map<String, Object>> ls;
+        try{
+            ls = jdbcTemplate.queryForList(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
+        return Map.of("code", 0, "list", ls);
+    }
+
+    @PostMapping("/delete_category")
+    public Map<String, Object> delete_category(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
+        String sql = "select * from user_table where session_id='" + session_id + "'";
+        List<Map<String, Object>> ls;
+        try{
+            ls = jdbcTemplate.queryForList(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
+        if(ls.size() == 0){
+            return Map.of("code", 8);
+        }
+        String level = ls.get(0).get("level").toString();
+        String expiration_time = ls.get(0).get("expiration_time").toString();
+        if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
+            return Map.of("code", 4);
+        }
+        if(level.compareTo("2") < 0){
+            return Map.of("code", 5);
+        }
+        sql = "select * from category_table where category='" + mp.get("category") + "'";
+        if(jdbcTemplate.queryForList(sql).size() == 0){
+            return Map.of("code", 11);
+        }
+        sql = "delete from category_table where category='" + mp.get("category") + "'";
+        try{
+            jdbcTemplate.update(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
+        return Map.of("code", 0);
     }
 
     // 查询消息的方法如 query
