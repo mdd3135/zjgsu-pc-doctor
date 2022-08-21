@@ -353,6 +353,7 @@ public class HelloController {
             return Map.of("code", 3);
         }
         if(ls.size() == 0){
+            System.out.println(sql);
             return Map.of("code", 8);
         }
         String level = ls.get(0).get("level").toString();
