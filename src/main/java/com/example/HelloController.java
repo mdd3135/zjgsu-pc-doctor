@@ -3,7 +3,6 @@ package com.example;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,6 +70,7 @@ public class HelloController {
         else return a;
     }
 
+    @SuppressWarnings("unchecked")
     @PostMapping("/submit")
     public Map<String, Object> submit(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
         int first = 0; 
