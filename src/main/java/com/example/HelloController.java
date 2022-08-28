@@ -3,7 +3,6 @@ package com.example;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,6 +70,7 @@ public class HelloController {
         else return a;
     }
 
+    @SuppressWarnings("unchecked")
     @PostMapping("/submit")
     public Map<String, Object> submit(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
         int first = 0; 
@@ -133,7 +133,7 @@ public class HelloController {
         // 构造map，便于调用之前写好的query方法查询最新插入的记录，并把结果保存在ls中，交给Roboot类处理机器人发送消息，并返回ls给前端
         Map<String, String> map2 = Map.of("id", map.get("LAST_INSERT_ID()").toString());
         ls = (List<Map<String, Object>>) query(map2).get("appointment_list");
-        Roboot.send((Map<String, Object>)ls.get(0));
+        //Roboot.send((Map<String, Object>)ls.get(0));
         return Map.of("code", 000, "appointment", ls.get(0));
     }
 

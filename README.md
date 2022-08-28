@@ -1,13 +1,42 @@
 # zjgsu-pc-doctor
 
-这是浙工商电脑医院预约程序的后端项目，采用springboot + mysql
+ 这是浙工商电脑医院预约程序的后端项目，采用springboot + mysql
 
-文件解释：
+## 文件解释：
 
-/src/main/java/com/example目录下为java代码
+1. src/main/java/com/example目录下为java代码
 
-/src/main/resources/application.properties文件是应用配置，包括mysql数据库登录方式，最大上传文件大小，上传文件存储路径等重要配置信息
+2. src/main/resources/application.properties文件是应用配置，包括mysql数据库登录方式，最大上传文件大小，上传文件存储路径等重要配置信息
 
-/pytest目录下是开发时用来测试功能是否正常的python代码
+3. python目录下是开发时用来测试功能是否正常的python代码，推荐使用apifox来代替测试功能
 
-/*.sql文件是数据库建表语句，数据库名为demo，登录用户名为mdd，这要跟上面说的应用配置对应。
+4. sql目录是数据库建表语句，数据库名为demo，登录用户名为mdd，这要跟上面说的应用配置对应。
+
+## 使用方法
+
+此项目仅在linux平台做测试，服务器操作系统建议ubuntu20.04/22.04，本地开发或调试可以使用任意主流linux发行版，我用的是arch linux。
+
+### 一、克隆项目
+终端执行
+```
+git clone https://github.com/mdd3135/zjgsu-pc-doctor.git
+cd zjgsu-pc-doctor/
+```
+
+### 二、建立目录
+
+/var/demo/   *存储文件路径*
+
+### 三、安装并配置mysql数据库
+
+1. 安装mysql数据库
+2. 建立新的用户mdd *这里的mdd用户名与application.properties配置文件里的用户名一致*
+3. 让渡所有权限给用户mdd
+4. 建立demo数据库 *这里的数据库名与application.properties配置文件里的数据库名一致*
+5. 在demo数据库中，分别创建appointment_table, category_table, message_table, user_table数据表，即，分别执行项目目录sql/下的appointment_table.sql, category_table.sql, message_table.sql, user_table.sql文件中的sql语句
+5. 导入测试数据，即，分别执行目录sql/下的appointment_table_export_xxxx.sql, category_table_export_xxxx.sql, user_table_export_xxx.sql文件中的sql语句
+
+### 四、部署springboot项目
+1. 在服务器上安装java17及以上版本
+2. 前往<https://github.com/mdd3135/zjgsu-pc-doctor/releases>下载最新的demo-0.0.1-SNAPSHOT.jar文件
+3. 在终端执行```java -jar demo-0.0.1-SNAPSHOT.jar```，运行项目。注意，一旦关闭当前终端，项目也会随之终止。想要在后台运行项目，则在终端执行```nohup java -jar demo-0.0.1-SNAPSHOT.jar &```
