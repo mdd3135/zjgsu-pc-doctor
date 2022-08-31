@@ -21,7 +21,6 @@ public class FileController {
     @Value("${file.upload.path}")
     private String path;
 
-
     @PostMapping("/upload")
     @ResponseBody
     public Map<String, Object> upload(@RequestParam("file") MultipartFile file, @RequestParam("type") String type){

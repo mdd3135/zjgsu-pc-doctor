@@ -15,10 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @RestController
-public class HelloController {
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
-	
+public class AppointmenController {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     // get接口为地址"/query"，该接口的具体用法看apifox，这里不再细说，下面几个方法也一样，不再注释了。
     // mp是接收的参数map
@@ -179,7 +178,7 @@ public class HelloController {
             jdbcTemplate.update(sql);
         }catch(Exception e){
             e.printStackTrace();
-            return Map.of("code", 3);
+            return Map.of("code", 9);
         }
         return Map.of("code", 0);
     }
@@ -246,162 +245,5 @@ public class HelloController {
             return Map.of("code", 3);
         }
         return Map.of("code", 0);
-    }
-
-    // 添加消息的方法如submit
-    @PostMapping("/add_message")
-    public String add_message(@RequestParam Map<String, String> mp){
-        int first = 0; 
-        int ok = 1;
-        Date date_time = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
-        String sql_time = sdf.format(date_time);
-        mp.put("time", sql_time);
-        String sql = "insert into message_table (";
-        for(String key : mp.keySet()){
-            if(first == 0){
-                sql = sql + key;
-                first = 1;
-            }
-            else{
-                sql = sql + "," + key;
-            }
-        }
-        sql = sql + ") values (";
-        first = 0;
-        for(String key : mp.keySet()){
-            if(first == 0){
-                sql = sql + "'" + mp.get(key) + "'";
-                first = 1;
-            }
-            else{
-                sql = sql + "," + "'" + mp.get(key) + "'";
-            }
-        }
-        sql = sql + ")";
-        try{
-            jdbcTemplate.update(sql);
-        }catch(Exception e){
-            e.printStackTrace();
-            ok = 0;
-        }
-        if(ok == 0) return "FAIL";
-        else {
-            sql = "SELECT LAST_INSERT_ID()";
-            Map<String, Object> map = jdbcTemplate.queryForMap(sql);
-            System.out.println(map);
-            return map.get("LAST_INSERT_ID()").toString();
-        }
-    }
-
-    @PostMapping("/add_category")
-    public Map<String, Object> add_category(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
-        String sql = "select * from user_table where session_id='" + session_id + "'";
-        List<Map<String, Object>> ls;
-        try{
-            ls = jdbcTemplate.queryForList(sql);
-        }catch(Exception e){
-            e.printStackTrace();
-            return Map.of("code", 3);
-        }
-        if(ls.size() == 0){
-            return Map.of("code", 8);
-        }
-        String level = ls.get(0).get("level").toString();
-        String expiration_time = ls.get(0).get("expiration_time").toString();
-        if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
-            return Map.of("code", 4);
-        }
-        if(level.compareTo("2") < 0){
-            return Map.of("code", 5);
-        }
-        sql = "select * from category_table where category='" + mp.get("category") + "'";
-        if(jdbcTemplate.queryForList(sql).size() != 0){
-            return Map.of("code", 10);
-        }
-        sql = "insert into category_table (category) values('" + mp.get("category") + "')";
-        try{
-            jdbcTemplate.update(sql);
-        }catch(Exception e){
-            e.printStackTrace();
-            return Map.of("code", 3);
-        }
-        return Map.of("code", 0);
-    }
-
-    @GetMapping("/query_category")
-    public Map<String, Object> query_category(@RequestParam Map<String, String> mp){
-        String sql = "select * from category_table";
-        List<Map<String, Object>> ls;
-        try{
-            ls = jdbcTemplate.queryForList(sql);
-        }catch(Exception e){
-            e.printStackTrace();
-            return Map.of("code", 3);
-        }
-        return Map.of("code", 0, "list", ls);
-    }
-
-    @PostMapping("/delete_category")
-    public Map<String, Object> delete_category(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
-        String sql = "select * from user_table where session_id='" + session_id + "'";
-        List<Map<String, Object>> ls;
-        try{
-            ls = jdbcTemplate.queryForList(sql);
-        }catch(Exception e){
-            e.printStackTrace();
-            return Map.of("code", 3);
-        }
-        if(ls.size() == 0){
-            System.out.println(sql);
-            return Map.of("code", 8);
-        }
-        String level = ls.get(0).get("level").toString();
-        String expiration_time = ls.get(0).get("expiration_time").toString();
-        if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
-            return Map.of("code", 4);
-        }
-        if(level.compareTo("2") < 0){
-            return Map.of("code", 5);
-        }
-        sql = "select * from category_table where category='" + mp.get("category") + "'";
-        if(jdbcTemplate.queryForList(sql).size() == 0){
-            return Map.of("code", 11);
-        }
-        sql = "delete from category_table where category='" + mp.get("category") + "'";
-        try{
-            jdbcTemplate.update(sql);
-        }catch(Exception e){
-            e.printStackTrace();
-            return Map.of("code", 3);
-        }
-        return Map.of("code", 0);
-    }
-
-    // 查询消息的方法如 query
-    @GetMapping("/query_message")
-    public List<Map<String, Object>> query_message(@RequestParam Map<String, String> mp){
-        int first = 0;
-        int page = -1;
-        String sql = "SELECT * FROM message_table ";
-        for(String key : mp.keySet()){
-            if(key.equals("page")){
-                page = Integer.parseInt(mp.get(key));
-            }
-            else if(first == 0){
-                sql = sql + "where " + key + " = " + "\"" + mp.get(key) + "\"";
-                first = 1;
-            }
-            else{
-                sql = sql + " and " + key + " = " + "\"" + mp.get(key) + "\"";
-            }
-        }
-        // sql = sql + "order by id desc";
-        if(page != -1){
-            int lmt = page * 10 - 10;
-            sql = sql +  " limit " + lmt + ",10";
-        }
-        List<Map<String, Object>> list =jdbcTemplate.queryForList(sql);
-        return list;
     }
 }

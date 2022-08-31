@@ -29,10 +29,10 @@ cd zjgsu-pc-doctor/
 
 ### 三、安装并配置mysql数据库
 
-1. 安装mysql数据库
-2. 建立新的用户mdd *这里的mdd用户名与application.properties配置文件里的用户名一致*
-3. 让渡所有权限给用户mdd
-4. 建立demo数据库 *这里的数据库名与application.properties配置文件里的数据库名一致*
+1. 安装mysql数据库. *不同操作系统安装过程略有不同，请自行搜索教程*
+2. 建立新的用户mdd: ```create user mdd@localhost identified by '313521996';``` *这里的mdd用户名与application.properties配置文件里的用户名一致*
+3. 让渡所有权限给用户mdd: ```grant all on *.* to mdd@localhost;```
+4. 建立demo数据库: ```create database demo;``` *这里的数据库名与application.properties配置文件里的数据库名一致*
 5. 在demo数据库中，分别创建appointment_table, category_table, message_table, user_table数据表，即，分别执行项目目录sql/下的appointment_table.sql, category_table.sql, message_table.sql, user_table.sql文件中的sql语句
 5. 导入测试数据，即，分别执行目录sql/下的appointment_table_export_xxxx.sql, category_table_export_xxxx.sql, user_table_export_xxx.sql文件中的sql语句
 
