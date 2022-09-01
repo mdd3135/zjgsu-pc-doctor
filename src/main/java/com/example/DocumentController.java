@@ -127,4 +127,62 @@ public class DocumentController {
         }
         return Map.of("code", 0);
     }
+
+    @PostMapping("/update_doc")
+    public Map<String, Object> update_doc(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
+        String sql = "select * from user_table where session_id='" + session_id + "'";
+        List<Map<String, Object>> ls;
+        try{
+            ls = jdbcTemplate.queryForList(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
+        if(ls.size() == 0){
+            return Map.of("code", 8);
+        }
+        String level = ls.get(0).get("level").toString();
+        String expiration_time = ls.get(0).get("expiration_time").toString();
+        if(String.valueOf(System.currentTimeMillis()).compareTo(expiration_time) > 0){
+            return Map.of("code", 4);
+        }
+        if(level.compareTo("2") < 0 ){
+            return Map.of("code", 5);
+        }
+        sql = "select * from document_table where id=" + mp.get("id").toString();
+        try{
+            ls = jdbcTemplate.queryForList(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
+        if(ls.size() == 0){
+            return Map.of("code", 9);
+        }
+        FileController.delete_file("/var/demo/doc/" + ls.get(0).get("file").toString());
+        sql = "update document_table set ";
+        int id = 0;
+        int first = 0;
+        for(String key : mp.keySet()){
+            if(key.equals("id")){
+                id = Integer.parseInt(mp.get(key));
+            }
+            else if(first == 0){
+                sql = sql + key + "='" + mp.get(key) + "'";
+                first = 1;
+            }
+            else{
+                sql = sql + "," + key + "='" + mp.get(key) + "'";
+            }
+        }
+        sql = sql + " where id=" + id;
+        try{
+            jdbcTemplate.update(sql);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
+        return Map.of("code", 0);
+    }
+
 }

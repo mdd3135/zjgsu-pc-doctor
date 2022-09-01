@@ -40,6 +40,12 @@ public class FileController {
         return Map.of("code", 0, "file_name", fileName);
     }
 
+    public static void delete_file(String filePath){
+        // todo
+        File file = new File(filePath);
+        file.delete();
+    }
+
     @GetMapping("/download")
     public String download(HttpServletResponse response, @RequestParam("file") String file){
         int ok = 1;

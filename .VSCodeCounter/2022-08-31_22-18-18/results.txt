@@ -1,0 +1,34 @@
+Date : 2022-08-31 22:18:18
+Directory : /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example
+Total : 10 files,  921 codes, 54 comments, 66 blanks, all 1041 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Java     |         10 |        921 |         54 |         66 |      1,041 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                    | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                       |         10 |        921 |         54 |         66 |      1,041 |
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                | language | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/AppointmenController.java | Java     |        219 |         21 |         10 |        250 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/CategoryController.java   | Java     |         96 |          0 |          8 |        104 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/DocumentController.java   | Java     |        121 |          2 |          8 |        131 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/FileController.java       | Java     |         61 |          0 |          7 |         68 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/HelloApplication.java     | Java     |          9 |          0 |          2 |         11 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/MessageController.java    | Java     |         84 |          1 |          7 |         92 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/Roboot.java               | Java     |         28 |          0 |          4 |         32 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/UserController.java       | Java     |        275 |          7 |         14 |        296 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/WebMvcConfig.java         | Java     |         11 |         23 |          2 |         36 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/htmlController.java       | Java     |         17 |          0 |          4 |         21 |
+| Total                                                                                   |          |        921 |         54 |         66 |      1,041 |
++-----------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

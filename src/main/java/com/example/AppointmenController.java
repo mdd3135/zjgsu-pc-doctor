@@ -169,6 +169,11 @@ public class AppointmenController {
         if(user_id.compareTo(appointment_user_id) != 0 && level.compareTo("2") < 0 ){
             return Map.of("code", 5);
         }
+        //删除相关联的图片文件
+        String[] fileArray = ls.get(0).get("problem_picture").toString().split(",");
+        for(int i = 0; i < fileArray.length; i++){
+            FileController.delete_file("/var/demo/appointment/" + fileArray[i]);
+        }
         // 拼装sql语句，结果类似于 delete from appointment_table where id = x
         sql = "delete from appointment_table where id = ";
         // 遍历mp，找到id值
