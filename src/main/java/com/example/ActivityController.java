@@ -15,12 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @RestController
-public class DocumentController {
+public class ActivityController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @PostMapping("/submit_doc")
-    public Map<String, Object> submit_doc(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
+    @PostMapping("/submit_activity")
+    public Map<String, Object> submit_activity(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
         Date date_time = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
         String sql_time = sdf.format(date_time);
@@ -43,7 +43,7 @@ public class DocumentController {
             return Map.of("code", 005);
         }
         mp.put("create_time", sql_time);
-        sql = "insert into document_table (";
+        sql = "insert into activity_table (";
         int first = 0;
         for(String key : mp.keySet()){
             if(first == 0){
@@ -76,9 +76,9 @@ public class DocumentController {
         return Map.of("code", 0);
     }
 
-    @GetMapping("/query_doc")
-    public Map<String, Object> query_doc(@RequestParam Map<String, String> mp){
-        String sql = "select * from document_table ";
+    @GetMapping("/query_activity")
+    public Map<String, Object> query_activity(@RequestParam Map<String, String> mp){
+        String sql = "select * from activity_table ";
         if(mp.containsKey("id")){
             sql += "where id = " + mp.get("id");
         }
@@ -93,11 +93,11 @@ public class DocumentController {
             e.printStackTrace();
             return Map.of("code", 3);
         }
-        return Map.of("code", 0, "doc_list", list);
+        return Map.of("code", 0, "activity_list", list);
     }
 
-    @PostMapping("/delete_doc")
-    public Map<String, Object> delete_doc(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
+    @PostMapping("/delete_activity")
+    public Map<String, Object> delete_activity(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
         String sql = "select * from user_table where session_id='" + session_id + "'";
         List<Map<String, Object>> ls;
         try{
@@ -117,7 +117,7 @@ public class DocumentController {
         if(level.compareTo("2") < 0 ){
             return Map.of("code", 5);
         }
-        sql = "delete from document_table where id = ";
+        sql = "delete from activity_table where id = ";
         sql += mp.get("id");
         try{
             jdbcTemplate.update(sql);
@@ -128,7 +128,7 @@ public class DocumentController {
         return Map.of("code", 0);
     }
 
-    @PostMapping("/update_doc")
+    @PostMapping("/update_activity")
     public Map<String, Object> update_doc(@RequestParam Map<String, String> mp, @RequestHeader("Authorization") String session_id){
         String sql = "select * from user_table where session_id='" + session_id + "'";
         List<Map<String, Object>> ls;
@@ -149,7 +149,7 @@ public class DocumentController {
         if(level.compareTo("2") < 0 ){
             return Map.of("code", 5);
         }
-        sql = "select * from document_table where id=" + mp.get("id").toString();
+        sql = "select * from activity_table where id=" + mp.get("id").toString();
         try{
             ls = jdbcTemplate.queryForList(sql);
         }catch(Exception e){
@@ -159,8 +159,9 @@ public class DocumentController {
         if(ls.size() == 0){
             return Map.of("code", 9);
         }
-        FileController.delete_file("/var/demo/doc/" + ls.get(0).get("file").toString());
-        sql = "update document_table set ";
+        FileController.delete_file("/var/demo/activity/" + ls.get(0).get("file").toString());
+        FileController.delete_file("/var/demo/activity/" + ls.get(0).get("cover").toString());
+        sql = "update activity_table set ";
         int id = 0;
         int first = 0;
         for(String key : mp.keySet()){
