@@ -1,0 +1,82 @@
+Date : 2022-09-05 18:31:23
+Directory : /home/mdd/文档/电医预约程序/zjgsu pc doctor
+Total : 35 files,  1554 codes, 109 comments, 171 blanks, all 1834 lines
+
+Languages
++-----------------+------------+------------+------------+------------+------------+
+| language        | files      | code       | comment    | blank      | total      |
++-----------------+------------+------------+------------+------------+------------+
+| Java            |         12 |      1,176 |         57 |         82 |      1,315 |
+| Batch           |          1 |        102 |         51 |         36 |        189 |
+| SQL             |         10 |         80 |          0 |          3 |         83 |
+| XML             |          1 |         60 |          0 |          8 |         68 |
+| Python          |          6 |         52 |          1 |         18 |         71 |
+| HTML            |          2 |         39 |          0 |          8 |         47 |
+| Markdown        |          1 |         28 |          0 |         14 |         42 |
+| Java Properties |          2 |         17 |          0 |          2 |         19 |
++-----------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                         | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                            |         35 |      1,554 |        109 |        171 |      1,834 |
+| .mvn                                                                                         |          1 |          2 |          0 |          1 |          3 |
+| .mvn/wrapper                                                                                 |          1 |          2 |          0 |          1 |          3 |
+| python                                                                                       |          6 |         52 |          1 |         18 |         71 |
+| sql                                                                                          |         10 |         80 |          0 |          3 |         83 |
+| src                                                                                          |         15 |      1,230 |         57 |         91 |      1,378 |
+| src/main                                                                                     |         14 |      1,221 |         57 |         86 |      1,364 |
+| src/main/java                                                                                |         11 |      1,167 |         57 |         77 |      1,301 |
+| src/main/java/com                                                                            |         11 |      1,167 |         57 |         77 |      1,301 |
+| src/main/java/com/example                                                                    |         11 |      1,167 |         57 |         77 |      1,301 |
+| src/main/resources                                                                           |          3 |         54 |          0 |          9 |         63 |
+| src/main/resources/templates                                                                 |          2 |         39 |          0 |          8 |         47 |
+| src/test                                                                                     |          1 |          9 |          0 |          5 |         14 |
+| src/test/java                                                                                |          1 |          9 |          0 |          5 |         14 |
+| src/test/java/com                                                                            |          1 |          9 |          0 |          5 |         14 |
+| src/test/java/com/example                                                                    |          1 |          9 |          0 |          5 |         14 |
+| src/test/java/com/example/demo                                                               |          1 |          9 |          0 |          5 |         14 |
++----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+
+| filename                                                                                     | language        | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/.mvn/wrapper/maven-wrapper.properties                    | Java Properties |          2 |          0 |          1 |          3 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/README.md                                                | Markdown        |         28 |          0 |         14 |         42 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/mvnw.cmd                                                 | Batch           |        102 |         51 |         36 |        189 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/pom.xml                                                  | XML             |         60 |          0 |          8 |         68 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/python/roboot_send_mesg.py                               | Python          |         18 |          0 |          3 |         21 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/python/test_delete.py                                    | Python          |          5 |          0 |          3 |          8 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/python/test_query.py                                     | Python          |          6 |          1 |          3 |         10 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/python/test_roboot.py                                    | Python          |         13 |          0 |          3 |         16 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/python/test_submit.py                                    | Python          |          5 |          0 |          3 |          8 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/python/test_update.py                                    | Python          |          5 |          0 |          3 |          8 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/activity_table.sql                                   | SQL             |         10 |          0 |          0 |         10 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/appointment_table.sql                                | SQL             |         15 |          0 |          0 |         15 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/appointment_table_export_2022-08-23_121219.sql       | SQL             |          5 |          0 |          1 |          6 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/category_table.sql                                   | SQL             |          4 |          0 |          0 |          4 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/category_table_export_2022-08-23_121235.sql          | SQL             |          5 |          0 |          1 |          6 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/document_table.sql                                   | SQL             |          9 |          0 |          0 |          9 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/message_table.sql                                    | SQL             |          9 |          0 |          0 |          9 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/notice_table.sql                                     | SQL             |          5 |          0 |          0 |          5 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/user_table.sql                                       | SQL             |         13 |          0 |          0 |         13 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/sql/user_table_export_2022-08-23_121251.sql              | SQL             |          5 |          0 |          1 |          6 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/ActivityController.java        | Java            |        178 |          2 |          9 |        189 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/AppointmenController.java      | Java            |        226 |         21 |         10 |        257 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/CategoryController.java        | Java            |         96 |          0 |          8 |        104 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/DocumentController.java        | Java            |        177 |          2 |          9 |        188 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/FileController.java            | Java            |         65 |          1 |          8 |         74 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/HelloApplication.java          | Java            |          9 |          0 |          2 |         11 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/MessageController.java         | Java            |         84 |          1 |          7 |         92 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/Roboot.java                    | Java            |         29 |          0 |          4 |         33 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/UserController.java            | Java            |        275 |          7 |         14 |        296 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/WebMvcConfig.java              | Java            |         11 |         23 |          2 |         36 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/java/com/example/htmlController.java            | Java            |         17 |          0 |          4 |         21 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/resources/application.properties                | Java Properties |         15 |          0 |          1 |         16 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/resources/templates/home.html                   | HTML            |         24 |          0 |          5 |         29 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/main/resources/templates/upload.html                 | HTML            |         15 |          0 |          3 |         18 |
+| /home/mdd/文档/电医预约程序/zjgsu pc doctor/src/test/java/com/example/demo/DemoApplicationTests.java | Java            |          9 |          0 |          5 |         14 |
+| Total                                                                                        |                 |      1,554 |        109 |        171 |      1,834 |
++----------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+

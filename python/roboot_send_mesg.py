@@ -13,8 +13,9 @@ bot = Mirai(
 async def background_task():
     await asyncio.sleep(1)
     print("background")
-    await bot.send_group_message(636956662, "mesg")
+    await bot.send_group_message(group_id, mesg)
     exit()
 
-mesg = str(sys.argv[1])
+group_id = int(sys.argv[1])
+mesg = str(sys.argv[2])
 bot.run()

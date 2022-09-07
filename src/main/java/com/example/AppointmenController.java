@@ -33,7 +33,7 @@ public class AppointmenController {
                 page = Integer.parseInt(mp.get(key));
             }
             else{
-                sql = sql + " and " + key + " = " + "\"" + mp.get(key) + "\"";
+                sql = sql + " and a." + key + " = " + "\"" + mp.get(key) + "\"";
             }
         }
         sql = sql + " order by a.id desc";
@@ -132,7 +132,20 @@ public class AppointmenController {
         // 构造map，便于调用之前写好的query方法查询最新插入的记录，并把结果保存在ls中，交给Roboot类处理机器人发送消息，并返回ls给前端
         Map<String, String> map2 = Map.of("id", map.get("LAST_INSERT_ID()").toString());
         ls = (List<Map<String, Object>>) query(map2).get("appointment_list");
-        //Roboot.send((Map<String, Object>)ls.get(0));
+        String sql_bot = "select * from notice_table";
+        String group;
+        try{
+            group = jdbcTemplate.queryForList(sql_bot).get(0).get("id").toString();
+        }catch (Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
+        try{
+            Roboot.send((Map<String, Object>)ls.get(0), group);
+        }catch(Exception e){
+            e.printStackTrace();
+            return Map.of("code", 3);
+        }
         return Map.of("code", 000, "appointment", ls.get(0));
     }
 
@@ -170,9 +183,11 @@ public class AppointmenController {
             return Map.of("code", 5);
         }
         //删除相关联的图片文件
-        String[] fileArray = ls.get(0).get("problem_picture").toString().split(",");
-        for(int i = 0; i < fileArray.length; i++){
-            FileController.delete_file("/var/demo/appointment/" + fileArray[i]);
+        if(ls.get(0).get("problem_picture") != null){
+            String[] fileArray = ls.get(0).get("problem_picture").toString().split(",");
+            for(int i = 0; i < fileArray.length; i++){
+                FileController.delete_file("/var/demo/appointment/" + fileArray[i]);
+            }
         }
         // 拼装sql语句，结果类似于 delete from appointment_table where id = x
         sql = "delete from appointment_table where id = ";

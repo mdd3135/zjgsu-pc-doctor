@@ -3,7 +3,8 @@ package com.example;
 import java.util.Map;
 
 public class Roboot {
-    public static void send(Map<String, Object> mesg){
+    
+    public static void send(Map<String, Object> mesg, String group){
         String content = "";
         for(String key : mesg.keySet()){
             if(key.equals("name")){
@@ -19,7 +20,7 @@ public class Roboot {
                 content += "问题分类：" + mesg.get(key) + "\n";
             }
         }
-        String str[] = {"python", "python/roboot_send_mesg.py", content};
+        String str[] = {"python", "python/roboot_send_mesg.py", group, content};
 
         try {
             Process p = Runtime.getRuntime().exec(str);
