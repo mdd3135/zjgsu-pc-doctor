@@ -1,6 +1,6 @@
 # zjgsu-pc-doctor
 
- 这是浙工商电脑医院预约程序的后端项目，采用springboot + mysql
+ 这是浙工商电脑医院预约程序的后端项目，采用springboot + mysql + mirai
 
 ## 文件解释：
 
@@ -8,7 +8,7 @@
 
 2. src/main/resources/application.properties文件是应用配置，包括mysql数据库登录方式，最大上传文件大小，上传文件存储路径等重要配置信息
 
-3. python目录下是开发时用来测试功能是否正常的python代码，推荐使用apifox来代替测试功能
+3. python目录下是一些python代码，调用qq机器人时，通过java调用python再调用mirai机器人。
 
 4. sql目录是数据库建表语句，数据库名为demo，登录用户名为mdd，这要跟上面说的应用配置对应。
 
@@ -33,10 +33,13 @@ cd zjgsu-pc-doctor/
 2. 建立新的用户mdd: ```create user mdd@localhost identified by '313521996';``` *这里的mdd用户名与application.properties配置文件里的用户名一致*
 3. 让渡所有权限给用户mdd: ```grant all on *.* to mdd@localhost;```
 4. 建立demo数据库: ```create database demo;``` *这里的数据库名与application.properties配置文件里的数据库名一致*
-5. 在demo数据库中，分别创建appointment_table, category_table, message_table, user_table数据表，即，分别执行项目目录sql/下的appointment_table.sql, category_table.sql, message_table.sql, user_table.sql文件中的sql语句
+5. 在demo数据库中，分别创建appointment_table, category_table, message_table, user_table，document_table，notice_table数据表，即，分别执行项目目录sql/下的appointment_table.sql, category_table.sql, message_table.sql, user_table.sql，document_table.sql，notice_table.sql，文件中的sql语句
 5. 导入测试数据，即，分别执行目录sql/下的appointment_table_export_xxxx.sql, category_table_export_xxxx.sql, user_table_export_xxx.sql文件中的sql语句
 
-### 四、部署springboot项目
+### 四、部署mirai机器人以及YiriMirai
+详情请见<https://yiri-mirai.wybxc.cc/docs/quickstart>
+
+### 五、部署springboot项目
 1. 在服务器上安装java17及以上版本
 2. 前往<https://github.com/mdd3135/zjgsu-pc-doctor/releases>下载最新的demo-0.0.1-SNAPSHOT.jar文件
 3. 在终端执行```java -jar demo-0.0.1-SNAPSHOT.jar```，运行项目。注意，一旦关闭当前终端，项目也会随之终止。想要在后台运行项目，则在终端执行```nohup java -jar demo-0.0.1-SNAPSHOT.jar &```
