@@ -37,7 +37,7 @@ cd zjgsu-pc-doctor/
 5. 导入测试数据，即，分别执行目录sql/下的appointment_table_export_xxxx.sql, category_table_export_xxxx.sql, user_table_export_xxx.sql文件中的sql语句
 
 ### 四、部署mirai机器人以及YiriMirai
-详情请见<https://yiri-mirai.wybxc.cc/docs/quickstart>
+1. 安装相应环境，详情请见<https://yiri-mirai.wybxc.cc/docs/quickstart>
 
 ### 五、部署springboot项目
 1. 在服务器上安装java17及以上版本
