@@ -47,8 +47,8 @@ public class UserController {
                 res.put("session_id", ls.get(0).get("session_id").toString());
                 return res;
             }
-            // 更新数据表中的session_id和expiration_time
-            String expiration_time = String.valueOf(Long.parseLong(now_stamp) + 7 * 24 * 3600 * 1000);
+            // 过期了，更新数据表中的session_id和expiration_time
+            String expiration_time = String.valueOf(Long.valueOf(now_stamp) + (long)(30L * 24L * 3600L * 1000L));
             sql = "update user_table set session_id = '" + now_stamp + "', expiration_time ='" + expiration_time + "' where user_id = '" + user_id + "'";
             try{
                 jdbcTemplate.update(sql);
@@ -69,6 +69,9 @@ public class UserController {
             if(key.equals("page")){
                 page = Integer.parseInt(mp.get("page"));
             }
+            if(key.equals("user_id") || key.equals("user_name")){
+                continue;
+            }
             else if(first == 0){
                 first = 1;
                 sql += "where " + key + "= '" + mp.get(key) + "' ";
@@ -77,6 +80,20 @@ public class UserController {
                 sql += "and " + key + "= '" + mp.get(key) + "' ";
             }
         }
+        if(mp.containsKey("user_id")){
+            sql += "and " + "user_id like '%" + mp.get("user_id") + "%'";
+        }
+        if(mp.containsKey("user_name")){
+            if(first == 0){
+                sql += "where ";
+                first = 1;
+            }
+            else{
+                sql += "and ";
+            }
+            sql += "user_name like '%" + mp.get("user_name") + "%'";
+        }
+
         List<Map<String, Object>> ls = jdbcTemplate.queryForList(sql);
         int size = ls.size();
         if(page != -1){
